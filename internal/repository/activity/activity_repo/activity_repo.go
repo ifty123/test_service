@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	getAllActivity = `SELECT id, title, email, created_at, updated_at from activity`
+	getAllActivity = `SELECT id, title, email, created_at, updated_at, deleted_at from activity`
 )
 
 var statement PreparedStatement
@@ -52,7 +52,7 @@ func (p *ActivityRepo) GetAllActivity() ([]*activity_model.ActivityModel, error)
 	//fmt.Println(id, "here")
 	// activity := []*activity_model.ActivityModel{}
 	var activity []*activity_model.ActivityModel
-	_, err := statement.getAllActivity.Query(&activity)
+	err := statement.getAllActivity.Select(&activity)
 
 	if err != nil {
 		log.Println("error :", err)

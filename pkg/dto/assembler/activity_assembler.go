@@ -30,3 +30,11 @@ func ToListDTOActivity(models []*activity_model.ActivityModel) []*dto.ActivityRe
 
 	return result
 }
+
+func ToModelActivity(dto *dto.ActivityReqDTO) *activity_model.ActivityModel {
+
+	return &activity_model.ActivityModel{
+		Email: dto.Email,
+		Title: dto.Title,
+	}
+}

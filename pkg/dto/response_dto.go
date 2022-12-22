@@ -1,7 +1,7 @@
 package dto
 
 type ResponseDTO struct {
-	Success bool        `json:"success"`
+	Status  string      `json:"status"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
 }

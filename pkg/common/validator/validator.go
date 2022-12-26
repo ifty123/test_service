@@ -190,7 +190,7 @@ var patterns = map[string]string{
 }
 
 var errors = map[string]string{
-	"required":     "%s must not be empty",
+	"required":     "%s cannnot be null",
 	"integer":      "%s must numeric",
 	"float":        "%s must numeric",
 	"non_zero":     "%s must non-zero",

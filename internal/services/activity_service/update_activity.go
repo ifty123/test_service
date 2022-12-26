@@ -1,8 +1,9 @@
 package activityService
 
 import (
-	"fmt"
+	"log"
 	"test_service/pkg/dto"
+	msgErrors "test_service/pkg/errors"
 )
 
 //tampil semua data
@@ -10,17 +11,18 @@ func (s *service) UpdateActivity(id int64, dto *dto.ActivityReqDTO) (*dto.Activi
 
 	_, errGet := s.ActivityRepo.GetActivityById(id)
 	if errGet != nil {
-		return nil, fmt.Errorf("Activity with ID %d Not Found", id)
+		return nil, msgErrors.ErrNotFound
 	}
 
 	err := s.ActivityRepo.UpdateActivity(id, dto.Title)
 	if err != nil {
+		log.Println("err update act :", err)
 		return nil, err
 	}
 
 	ActById, errGet := s.GetActivityById(id)
 	if errGet != nil {
-		return nil, err
+		return nil, msgErrors.ErrNotFound
 	}
 
 	return ActById, nil

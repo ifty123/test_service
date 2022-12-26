@@ -16,7 +16,7 @@ const (
 	GetActivityById = `SELECT * from activity WHERE id = ?`
 	SaveActivity    = `INSERT INTO activity (email, title, created_at) VALUES ('$1', '$2', now())`
 	LastInsertId    = `SELECT last_insert_id()`
-	DeletedById     = `UPDATE activity SET deleted_at = now() WHERE id = ?`
+	DeletedById     = `DELETE FROM activity WHERE id = ?`
 	UpdateActivity  = `UPDATE activity SET title = '$1', updated_at = now() WHERE id = ?`
 )
 
@@ -127,7 +127,7 @@ func (p *ActivityRepo) DeleteActivityById(id int64) error {
 	_, err := statement.DeletedById.Exec(id)
 
 	if err != nil {
-		log.Println("Failed Query GetMAhasiswa By ID : ", err)
+		log.Println("Failed Query delete By ID : ", err)
 		return err
 	}
 

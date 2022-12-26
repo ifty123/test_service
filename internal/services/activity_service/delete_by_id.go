@@ -1,7 +1,7 @@
 package activityService
 
 import (
-	"fmt"
+	msgErrors "test_service/pkg/errors"
 )
 
 //tampil semua data
@@ -9,7 +9,7 @@ func (s *service) DeleteActivityById(id int64) error {
 
 	_, errGet := s.ActivityRepo.GetActivityById(id)
 	if errGet != nil {
-		return fmt.Errorf("Activity with ID %d Not Found", id)
+		return msgErrors.ErrNotFound
 	}
 
 	err := s.ActivityRepo.DeleteActivityById(id)

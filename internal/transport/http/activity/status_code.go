@@ -23,6 +23,8 @@ func getStatusCode(err error) int {
 		return http.StatusBadRequest
 	case msgErrors.ErrFailAuth:
 		return http.StatusForbidden
+	case msgErrors.ErrBadRequest:
+		return http.StatusBadRequest
 	default:
 		return http.StatusInternalServerError
 	}

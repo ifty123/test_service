@@ -6,13 +6,6 @@ import (
 )
 
 func ToDTOTodo(model *todo_model.TodoModel) *dto.TodoRespDTO {
-	var time interface{}
-
-	if model.DeletedAt.Valid {
-		time = model.DeletedAt.Time
-	} else {
-		time = nil
-	}
 
 	return &dto.TodoRespDTO{
 		Id:            model.Id,
@@ -22,7 +15,6 @@ func ToDTOTodo(model *todo_model.TodoModel) *dto.TodoRespDTO {
 		Priority:      model.Priority,
 		CreatedAt:     model.CreatedAt,
 		UpdatedAt:     model.Updatedat,
-		DeletedAt:     time,
 	}
 }
 

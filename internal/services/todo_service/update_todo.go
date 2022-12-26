@@ -1,9 +1,10 @@
 package todoService
 
 import (
-	"fmt"
+	"log"
 	"test_service/pkg/dto"
 	"test_service/pkg/dto/assembler"
+	msgErrors "test_service/pkg/errors"
 )
 
 //tampil semua data
@@ -11,19 +12,20 @@ func (s *service) UpdateTodo(id int64, dto *dto.TodoUpdateReqDTO) (*dto.TodoResp
 
 	_, errGet := s.TodoRepo.GetTodoById(id)
 	if errGet != nil {
-		return nil, fmt.Errorf("Todo with ID %d Not Found", id)
+		return nil, msgErrors.ErrNotFound
 	}
 
 	update := assembler.ToModelUpdateTodo(dto)
 
 	err := s.TodoRepo.UpdateTodo(update)
 	if err != nil {
+		log.Println("err update todo :", err)
 		return nil, err
 	}
 
 	ActById, errGet := s.GetTodoById(id)
 	if errGet != nil {
-		return nil, err
+		return nil, msgErrors.ErrNotFound
 	}
 
 	return ActById, nil

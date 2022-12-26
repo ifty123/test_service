@@ -6,19 +6,13 @@ import (
 )
 
 func ToDTOActivity(model *activity_model.ActivityModel) *dto.ActivityRespDTO {
-	var time interface{}
-	if model.DeletedAt.Valid {
-		time = model.DeletedAt.Time
-	} else {
-		time = nil
-	}
+
 	return &dto.ActivityRespDTO{
 		Id:        model.Id,
 		Email:     model.Email,
 		Title:     model.Title,
 		CreatedAt: model.CreatedAt,
 		UpdatedAt: model.Updatedat,
-		DeletedAt: time,
 	}
 }
 

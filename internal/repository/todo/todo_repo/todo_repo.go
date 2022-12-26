@@ -16,7 +16,7 @@ const (
 	GetTodoById  = `SELECT * from todo WHERE id = ?`
 	SaveTodo     = `INSERT INTO todo (activity_group_id, is_active, title,priority, created_at) VALUES ('$1', '$2', '$3', '$4', now())`
 	LastInsertId = `SELECT last_insert_id()`
-	DeletedById  = `UPDATE todo SET deleted_at = now() WHERE id = ?`
+	DeletedById  = `DELETE FROM todo WHERE id = ?`
 	UpdateTodo   = `UPDATE todo SET title = '$1',  priority = '$2', is_active = '$3', updated_at = now() WHERE id = ?`
 )
 

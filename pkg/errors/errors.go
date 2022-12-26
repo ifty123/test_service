@@ -6,7 +6,9 @@ const (
 	ErrorDB           = "Database Error"
 	ErrorExistingData = "Data Already Exist"
 	ErrorNoDataChange = "No Data Changes"
-	ErrorDataNotFound = "Data Not Found"
+	ErrorDataNotFound = "Not Found"
+	ErrorFailed       = "Failed"
+	ErrorBadRequest   = "Bad Request"
 )
 
 var (
@@ -20,4 +22,6 @@ var (
 	ErrInvalidRequest = errors.New("Invalid Request")
 	// ErrFailAuth will throw if the auth is not valid
 	ErrFailAuth = errors.New("Authentication Failed")
+	//
+	ErrBadRequest = errors.New("Your requested Item is bad")
 )

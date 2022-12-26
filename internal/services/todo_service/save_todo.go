@@ -1,9 +1,10 @@
 package todoService
 
 import (
-	"fmt"
+	"log"
 	"test_service/pkg/dto"
 	"test_service/pkg/dto/assembler"
+	msgErrors "test_service/pkg/errors"
 )
 
 //tampil semua data
@@ -15,20 +16,15 @@ func (s *service) SaveTodo(dto *dto.TodoCreateReqDTO) (*dto.TodoRespDTO, error) 
 		saveAct.Priority = "very-high"
 	}
 
-	//cek activity id, jika ada maka ditolak
-	activity, erAct := s.ActivityRepo.GetActivityById(dto.ActivityGroupId)
-	if erAct != nil || activity == nil {
-		return nil, fmt.Errorf("Todo with activity ID %d Not Found", saveAct.ActivityGroupId)
-	}
-
 	id, err := s.TodoRepo.SaveTodo(saveAct)
 	if err != nil {
+		log.Println("err save todo :", err)
 		return nil, err
 	}
 
 	ActById, errGet := s.GetTodoById(id)
 	if errGet != nil {
-		return nil, err
+		return nil, msgErrors.ErrNotFound
 	}
 
 	return ActById, nil

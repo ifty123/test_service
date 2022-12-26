@@ -61,8 +61,8 @@ func main() {
 
 	//repo todo
 	todorepo := todoRepository.NewRepo(db.Conn)
-	srvTodo := todoService.NewService(todorepo, activityrepo)
-	todoHandler.NewHttpHandler(e, srvTodo)
+	srvTodo := todoService.NewService(todorepo)
+	todoHandler.NewHttpHandler(e, srvTodo, srvAct)
 
 	go func() {
 		c := make(chan os.Signal, 1)

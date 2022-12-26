@@ -11,6 +11,10 @@ import (
 	activityService "test_service/internal/services/activity_service"
 	activityHandler "test_service/internal/transport/http/activity"
 
+	todoRepository "test_service/internal/repository/todo/todo_repo"
+	todoService "test_service/internal/services/todo_service"
+	todoHandler "test_service/internal/transport/http/todo"
+
 	"test_service/internal/transport/http/middleware"
 
 	"github.com/labstack/echo"
@@ -51,9 +55,14 @@ func main() {
 	e.Use(m.CORS)
 
 	//repo activity
-	sqlrepo := activityRepository.NewRepo(db.Conn)
-	srv := activityService.NewService(sqlrepo)
-	activityHandler.NewHttpHandler(e, srv)
+	activityrepo := activityRepository.NewRepo(db.Conn)
+	srvAct := activityService.NewService(activityrepo)
+	activityHandler.NewHttpHandler(e, srvAct)
+
+	//repo todo
+	todorepo := todoRepository.NewRepo(db.Conn)
+	srvTodo := todoService.NewService(todorepo, activityrepo)
+	todoHandler.NewHttpHandler(e, srvTodo)
 
 	go func() {
 		c := make(chan os.Signal, 1)

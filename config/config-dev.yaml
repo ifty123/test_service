@@ -1,7 +1,7 @@
 appName: test_service
 
 server:
-  port: "8080"
+  port: "3030"
   log_level: 3
 
 db:

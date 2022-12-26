@@ -1,9 +1,9 @@
-package activityHandler
+package todoHandler
 
 import (
 	"net/http"
 	"strconv"
-	activityService "test_service/internal/services/activity_service"
+	todoService "test_service/internal/services/todo_service"
 	"test_service/pkg/dto"
 
 	msgErrors "test_service/pkg/errors"
@@ -15,24 +15,35 @@ import (
 )
 
 type HttpHandler struct {
-	service activityService.ActivityService
+	service todoService.TodoService
 }
 
-func NewHttpHandler(e *echo.Echo, srv activityService.ActivityService) {
+func NewHttpHandler(e *echo.Echo, srv todoService.TodoService) {
 	handler := &HttpHandler{
 		srv,
 	}
-	e.GET("activity-groups", handler.GetAllActivity)
-	e.GET("activity-groups/:id", handler.GetActivityById)
-	e.POST("activity-groups", handler.SaveActivity)
-	e.DELETE("activity-groups/:id", handler.DeleteActivityById)
-	e.PATCH("activity-groups/:id", handler.UpdateActivityById)
+	e.GET("todo-items", handler.GetAllTodo)
+	e.GET("todo-items/:id", handler.GetTodoById)
+	e.POST("todo-items", handler.SaveTodo)
+	e.DELETE("todo-items/:id", handler.DeleteTodoById)
+	e.PATCH("todo-items/:id", handler.UpdateTodoById)
 
 }
 
-func (h *HttpHandler) GetAllActivity(c echo.Context) error {
+func (h *HttpHandler) GetAllTodo(c echo.Context) error {
+
+	qp := c.QueryParam("activity_group_id")
+	page, err := strconv.Atoi(qp)
+	if err != nil {
+		log.Error(err.Error())
+		return c.JSON(500, dto.ResponseDTO{
+			Status:  "Failed",
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
 	//masuk ke service
-	data, err := h.service.GetAllActivity()
+	data, err := h.service.GetAllTodo(int64(page))
 	if err != nil {
 		log.Error(err.Error())
 		return c.JSON(getStatusCode(err), dto.ResponseDTO{
@@ -51,7 +62,7 @@ func (h *HttpHandler) GetAllActivity(c echo.Context) error {
 	return c.JSON(http.StatusOK, respon)
 }
 
-func (h *HttpHandler) GetActivityById(c echo.Context) error {
+func (h *HttpHandler) GetTodoById(c echo.Context) error {
 
 	id := c.Param("id")
 	if id == "" {
@@ -62,13 +73,14 @@ func (h *HttpHandler) GetActivityById(c echo.Context) error {
 		})
 	}
 	idInt, _ := strconv.Atoi(id)
+
 	//masuk ke service
-	data, err := h.service.GetActivityById(int64(idInt))
+	data, err := h.service.GetTodoById(int64(idInt))
 	if err != nil {
 		log.Error(err.Error())
 		return c.JSON(getStatusCode(err), dto.ResponseDTO{
 			Status:  "Failed",
-			Message: msgErrors.ErrorDataNotFound,
+			Message: err.Error(),
 			Data:    nil,
 		})
 	}
@@ -82,8 +94,8 @@ func (h *HttpHandler) GetActivityById(c echo.Context) error {
 	return c.JSON(http.StatusOK, respon)
 }
 
-func (h *HttpHandler) SaveActivity(c echo.Context) error {
-	postDTO := dto.ActivityReqDTO{}
+func (h *HttpHandler) SaveTodo(c echo.Context) error {
+	postDTO := dto.TodoCreateReqDTO{}
 	//byte ke json
 	if err := c.Bind(&postDTO); err != nil {
 		log.Error(err.Error())
@@ -100,7 +112,7 @@ func (h *HttpHandler) SaveActivity(c echo.Context) error {
 		})
 	}
 
-	data, errSave := h.service.SaveActivity(&postDTO)
+	data, errSave := h.service.SaveTodo(&postDTO)
 	if errSave != nil {
 		return c.JSON(getStatusCode(errSave), dto.ResponseDTO{
 			Status:  "Failed",
@@ -118,7 +130,7 @@ func (h *HttpHandler) SaveActivity(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (h *HttpHandler) DeleteActivityById(c echo.Context) error {
+func (h *HttpHandler) DeleteTodoById(c echo.Context) error {
 
 	id := c.Param("id")
 	if id == "" {
@@ -130,7 +142,7 @@ func (h *HttpHandler) DeleteActivityById(c echo.Context) error {
 	}
 	idInt, _ := strconv.Atoi(id)
 	//masuk ke service
-	err := h.service.DeleteActivityById(int64(idInt))
+	err := h.service.DeleteTodoById(int64(idInt))
 	if err != nil {
 		log.Error(err.Error())
 		return c.JSON(getStatusCode(err), dto.ResponseDTO{
@@ -149,9 +161,9 @@ func (h *HttpHandler) DeleteActivityById(c echo.Context) error {
 	return c.JSON(http.StatusOK, respon)
 }
 
-func (h *HttpHandler) UpdateActivityById(c echo.Context) error {
+func (h *HttpHandler) UpdateTodoById(c echo.Context) error {
 
-	postDTO := dto.ActivityReqDTO{}
+	postDTO := dto.TodoUpdateReqDTO{}
 	//byte ke json
 	if err := c.Bind(&postDTO); err != nil {
 		log.Error(err.Error())
@@ -178,7 +190,7 @@ func (h *HttpHandler) UpdateActivityById(c echo.Context) error {
 	}
 	idInt, _ := strconv.Atoi(id)
 	//masuk ke service
-	data, err := h.service.UpdateActivity(int64(idInt), &postDTO)
+	data, err := h.service.UpdateTodo(int64(idInt), &postDTO)
 	if err != nil {
 		log.Error(err.Error())
 		return c.JSON(getStatusCode(err), dto.ResponseDTO{

@@ -15,11 +15,11 @@ var EnvConfigs *envConfigs
 // struct to map env values
 type envConfigs struct {
 	LocalServerPort string `mapstructure:"SERVER_PORT"`
-	DbUsername      string `mapstructure:"DB_USERNAME"`
-	DbPassword      string `mapstructure:"DB_PASSWORD"`
-	DbName          string `mapstructure:"DB_NAME"`
-	DbHost          string `mapstructure:"DB_HOST"`
-	DbPort          string `mapstructure:"DB_PORT"`
+	DbUsername      string `mapstructure:"MYSQL_USER"`
+	DbPassword      string `mapstructure:"MYSQL_PASSWORD"`
+	DbName          string `mapstructure:"MYSQL_DBNAME"`
+	DbHost          string `mapstructure:"MYSQL_HOST"`
+	DbPort          string `mapstructure:"MYSQL_PORT"`
 	AppName         string `mapstructure:"APP_NAME"`
 }
 

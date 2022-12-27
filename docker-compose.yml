@@ -5,44 +5,28 @@ version: '3.7'
 # Define services
 services:
   database:
-    image: mysql
+    env_file:
+      - .env
+    container_name: dbmaster
+    image: mysql:5.7
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASS:?err}
-      MYSQL_DATABASE: ${DB_NAME:?err}
-      # You should comment following (MYSQL_USER key-value) line if you using 'root' as user
-      # MYSQL_USER: ${DB_USER:?err}
-      MYSQL_PASSWORD: ${DB_PASS:?err}
     ports:
-      - ${DB_PORT:-3306}:3306
-    expose:
-      - 3306
+      - "3306:3306"
 
   # App Service
-  auth:
-    # Configuration for building the docker image for the service
-    app:
+  app:
     build: .
-    image: ymanshur/go-restful:${APP_VERSION}
+    image: todo_app
     restart: always
-    container_name: go-restful
+    container_name: todo
+    env_file:
+      - .env
     ports:
-      - ${APP_PORT:-8000}:8000
-    environment:
-      JWT_SECRET: ${JWT_SECRET:?err}
-      DB_USER: ${DB_USER:?err}
-      DB_PASS: ${DB_PASS}
-      DB_PORT: ${DB_PORT:-3306}
-      DB_HOST: host.docker.internal
-      DB_NAME: ${DB_NAME:?err}
+      - "3030:3030"
     depends_on:
       - database
-    ports:
-      - "8080:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
-    restart: unless-stopped
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - default
   
-  # Fetch Service
   
   

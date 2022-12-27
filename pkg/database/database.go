@@ -3,9 +3,10 @@ package database
 import (
 	"fmt"
 
+	cnf "test_service/config"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"github.com/spf13/viper"
 )
 
 type Database struct {
@@ -22,11 +23,11 @@ type Config struct {
 
 func MakeInitialize() *Config {
 	return &Config{
-		Host:     viper.GetString("db.host"),
-		Username: viper.GetString("db.user"),
-		Password: viper.GetString("db.password"),
-		Database: viper.GetString("db.dbname"),
-		Port:     viper.GetString("db.port"),
+		Host:     cnf.EnvConfigs.DbHost,
+		Username: cnf.EnvConfigs.DbUsername,
+		Password: cnf.EnvConfigs.DbPassword,
+		Database: cnf.EnvConfigs.DbName,
+		Port:     cnf.EnvConfigs.DbPort,
 	}
 }
 

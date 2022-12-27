@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	cnf "test_service/config"
 	"test_service/pkg/database"
 
 	activityRepository "test_service/internal/repository/activity/activity_repo"
@@ -19,7 +20,6 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/gommon/log"
-	"github.com/spf13/viper"
 )
 
 func main() {
@@ -29,14 +29,7 @@ func main() {
 	e := echo.New()
 	m := middleware.NewMidleware()
 
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./config")
-	viper.SetConfigName("config-dev")
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		e.Logger.Fatal(err)
-	}
+	cnf.InitEnvConfigs()
 
 	connect := database.MakeInitialize()
 
@@ -71,10 +64,10 @@ func main() {
 	}()
 
 	go func() {
-		errChan <- e.Start(":" + viper.GetString("server.port"))
+		errChan <- e.Start(":" + cnf.EnvConfigs.LocalServerPort)
 	}()
 
-	e.Logger.Print("Starting ", viper.GetString("appName"))
+	e.Logger.Print("Starting ", cnf.EnvConfigs.AppName)
 	err = <-errChan
 	log.Error(err.Error())
 

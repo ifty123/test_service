@@ -12,21 +12,23 @@ services:
     restart: always
     ports:
       - "3306:3306"
+    networks:
+      - default
 
   # App Service
   app:
-    build: .
+    env_file: .env
+    build:
+      context: . # Use an image built from the specified dockerfile in the current directory.
+      dockerfile: Dockerfile
     image: todo_app
     container_name: todo
-    restart: always
-    env_file:
-     - .env
+    restart: on-failure
     ports:
       - "3030:3030"
     depends_on:
       - database
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - default
-  
-  
+
   

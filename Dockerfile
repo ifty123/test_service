@@ -3,28 +3,36 @@
 FROM golang:1.18-alpine AS builder
 LABEL maintainer="Alif Iftitah<alifipa5@gmail.com>"
 
+ENV APP_NAME=todo_app
+ENV GO111MODULE=on
+ENV GOPRIVATE=github.com/ifty123
+ENV TZ=Asia/Jakarta
+ENV GIT_TERMINAL_PROMPT=0
+ENV CGO_ENABLED=0
+
+RUN apk update && apk upgrade
+RUN apk add --no-cache --virtual .build-deps --no-mysql -q \
+    bash \
+    curl \
+    busybox-extras \
+    make \
+    git \
+    tzdata && \
+    cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apk update && apk add --no-cache coreutils
+
 WORKDIR /app
 
-# Copy all app files
-COPY . ./
+RUN mkdir -p /app/todo
+COPY . /app/todo
+WORKDIR /app/todo
 
-# Download necessary Go modules
-# COPY go.mod ./
-# COPY go.sum ./
-RUN go mod download
+RUN ls -ls
 
-# COPY *.go ./
+RUN go mod tidy -compat=1.18
 
-# Build executable binary
-RUN go build -o /main
-
-# Build a small image
-FROM alpine:3.16.0
-
-WORKDIR /
-
-COPY --from=builder /main .
+RUN go build
 
 EXPOSE 3030
 
-ENTRYPOINT ["./main"]
+CMD "./todo_app"

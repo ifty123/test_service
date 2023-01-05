@@ -21,13 +21,13 @@ type Config struct {
 	Port     string
 }
 
-func MakeInitialize() *Config {
+func MakeInitialize(cnf *cnf.EnvConfigs) *Config {
 	return &Config{
-		Host:     cnf.EnvConfigs.DbHost,
-		Username: cnf.EnvConfigs.DbUsername,
-		Password: cnf.EnvConfigs.DbPassword,
-		Database: cnf.EnvConfigs.DbName,
-		Port:     cnf.EnvConfigs.DbPort,
+		Host:     cnf.DbHost,
+		Username: cnf.DbUsername,
+		Password: cnf.DbPassword,
+		Database: cnf.DbName,
+		Port:     cnf.DbPort,
 	}
 }
 

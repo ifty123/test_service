@@ -29,9 +29,10 @@ func main() {
 	e := echo.New()
 	m := middleware.NewMidleware()
 
-	cnf.InitEnvConfigs()
+	//get env
+	configure := cnf.Config()
 
-	connect := database.MakeInitialize()
+	connect := database.MakeInitialize(configure)
 
 	db, err := database.Initialize(connect)
 	if err != nil {
@@ -64,10 +65,10 @@ func main() {
 	}()
 
 	go func() {
-		errChan <- e.Start(":" + cnf.EnvConfigs.LocalServerPort)
+		errChan <- e.Start(":" + cnf.Config().LocalServerPort)
 	}()
 
-	e.Logger.Print("Starting ", cnf.EnvConfigs.AppName)
+	e.Logger.Print("Starting ", cnf.Config().AppName)
 	err = <-errChan
 	log.Error(err.Error())
 

@@ -2,47 +2,43 @@ package config
 
 import (
 	"log"
+	"os"
 
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
 
-func InitEnvConfigs() {
-	EnvConfigs = loadEnvVariables()
-}
-
-var EnvConfigs *envConfigs
-
 // struct to map env values
-type envConfigs struct {
-	LocalServerPort string `mapstructure:"SERVER_PORT"`
-	DbUsername      string `mapstructure:"DB_USER"`
-	DbPassword      string `mapstructure:"DB_PASS"`
-	DbName          string `mapstructure:"DB_NAME"`
-	DbHost          string `mapstructure:"DB_HOST"`
-	DbPort          string `mapstructure:"DB_PORT"`
-	AppName         string `mapstructure:"APP_NAME"`
+type EnvConfigs struct {
+	LocalServerPort string
+	DbUsername      string
+	DbPassword      string
+	DbName          string
+	DbHost          string
+	DbPort          string
+	AppName         string
 }
 
-func loadEnvVariables() (config *envConfigs) {
-	// Tell viper the path/location of your env file. If it is root just add "."
-	viper.AddConfigPath(".")
-
-	viper.SetConfigFile("./config")
-
-	// Tell viper the name of your file
-	viper.SetConfigName(".env")
-
-	// Tell viper the type of your file
-	viper.SetConfigType("env")
-
-	// Viper reads all the variables from env file and log error if any found
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal("Error reading env file", err)
+func Config() *EnvConfigs {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal("Error loading .env file", err)
+		return nil
 	}
-
-	// Viper unmarshals the loaded env varialbes into the struct
-	if err := viper.Unmarshal(&config); err != nil {
-		log.Fatal(err)
+	return &EnvConfigs{
+		LocalServerPort: os.Getenv("SERVER_PORT"),
+		DbUsername:      os.Getenv("DB_USER"),
+		DbPassword:      os.Getenv("DB_PASS"),
+		DbName:          os.Getenv("DB_NAME"),
+		DbHost:          os.Getenv("DB_HOST"),
+		DbPort:          os.Getenv("DB_PORT"),
+		AppName:         os.Getenv("APP_NAME"),
 	}
-	return
+	// return &EnvConfigs{
+	// 	LocalServerPort: "3030",
+	// 	DbUsername:      "root",
+	// 	DbPassword:      "",
+	// 	DbName:          "dbmaster",
+	// 	DbHost:          "database",
+	// 	DbPort:          "3306",
+	// 	AppName:         "test_service",
+	// }
 }
